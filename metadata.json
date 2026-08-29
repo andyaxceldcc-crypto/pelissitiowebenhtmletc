@@ -1,0 +1,8 @@
+{
+  "name": "CineStream HD",
+  "description": "andyaxceldominguezccorau TV 🇵🇪 - Plataforma de streaming de películas, series y anime en 4K UHD y HD con reproductor multi-servidor y redes sociales oficiales de Andy Axcel Dominguez Ccorau.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

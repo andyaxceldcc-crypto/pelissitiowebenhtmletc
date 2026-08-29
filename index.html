@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>andyaxceldominguezccorau TV 🇵🇪 - Streaming 4K & Multi-Servidor</title>
+  <meta name="description" content="andyaxceldominguezccorau TV 🇵🇪 - Plataforma de streaming de películas y series en 4K UHD y HD con reproductor multi-servidor y redes sociales oficiales de Andy Axcel Dominguez Ccorau." />
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              yellow: '#eab308',
+              dark: '#0e0e11',
+              sidebar: '#0f0f10',
+              card: '#141418'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts & Custom CSS -->
+  <link rel="stylesheet" href="src/style.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap');
+    :root { --bg-main: #0e0e11; --accent-yellow: #eab308; }
+    body { font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #0e0e11; color: #f3f4f6; margin: 0; padding: 0; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+    .animate-fadeIn { animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .card-hover-effect { transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; }
+    .card-hover-effect:hover { transform: translateY(-4px); }
+  </style>
+
+  <!-- Lucide Icons & HLS.js for direct video streaming -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+  <script>
+    function getPosterFallback(title, genre, year) {
+      const palettes = [
+        ['#09090b', '#1e1b4b', '#3b82f6'],
+        ['#09090b', '#450a0a', '#ef4444'],
+        ['#09090b', '#3f2c06', '#eab308'],
+        ['#09090b', '#064e3b', '#10b981'],
+        ['#09090b', '#3b0764', '#a855f7']
+      ];
+      const hash = (title || 'pelicula').split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
+      const c = palettes[hash % palettes.length];
+      const cleanTitle = (title || 'Película').replace(/["'<>]/g, '');
+      const cleanGenre = (genre || '4K UHD').replace(/["'<>]/g, '');
+      const cleanYear = (year || '2025').toString();
+
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="100%" height="100%">
+        <defs>
+          <linearGradient id="g${hash}" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="${c[0]}"/>
+            <stop offset="60%" stop-color="${c[1]}"/>
+            <stop offset="100%" stop-color="${c[2]}"/>
+          </linearGradient>
+        </defs>
+        <rect width="400" height="600" fill="url(#g${hash})"/>
+        <circle cx="200" cy="220" r="90" fill="${c[2]}" opacity="0.25"/>
+        <g transform="translate(160, 180) scale(1.6)">
+          <polygon points="5 3 19 12 5 21 5 3" fill="${c[2]}" fill-opacity="0.9"/>
+        </g>
+        <rect x="24" y="24" width="130" height="30" rx="8" fill="#eab308" />
+        <text x="89" y="44" fill="#000000" font-size="12" font-family="system-ui, sans-serif" font-weight="900" text-anchor="middle">🇵🇪 PERÚ 4K</text>
+        <text x="200" y="380" fill="#ffffff" font-size="22" font-family="system-ui, sans-serif" font-weight="bold" text-anchor="middle">${cleanTitle.substring(0, 24)}</text>
+        <text x="200" y="415" fill="#facc15" font-size="14" font-family="system-ui, sans-serif" font-weight="600" text-anchor="middle">${cleanGenre} • ${cleanYear}</text>
+        <rect x="50" y="470" width="300" height="44" rx="12" fill="#18181b" stroke="#3f3f46" stroke-width="1.5"/>
+        <text x="200" y="498" fill="#e4e4e7" font-size="13" font-family="system-ui, sans-serif" font-weight="bold" text-anchor="middle">andyaxceldominguezccorau TV</text>
+      </svg>`;
+      return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    }
+    window.getPosterFallback = getPosterFallback;
+  </script>
+</head>
+<body class="bg-[#0e0e11] text-zinc-100 min-h-screen selection:bg-yellow-400 selection:text-black">
+
+  <div class="flex flex-row min-h-screen">
+
+    <!-- VERTICAL SIDEBAR -->
+    <aside class="w-16 sm:w-20 bg-[#0f0f10] border-r border-zinc-800/80 flex flex-col items-center py-5 justify-between flex-shrink-0 z-30 fixed sm:sticky top-0 h-screen">
+      
+      <!-- Top Brand Logo -->
+      <div class="flex flex-col items-center space-y-5">
+        <button onclick="window.app.switchTab('home')" class="w-11 h-11 rounded-2xl bg-[#141418] border border-yellow-400/40 p-1 flex items-center justify-center shadow-lg shadow-yellow-500/20 active:scale-95 transition-transform cursor-pointer relative group overflow-hidden" title="andyaxceldominguezccorau TV 🇵🇪">
+          <img src="https://scontent.fjau4-1.fna.fbcdn.net/v/t39.30808-6/729979233_122253465908263951_4502764980248591946_n.png?stp=dst-png&cstp=mx1080x1920&ctp=s1080x1920&_nc_cat=100&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=JHmo84kqR9cQ7kNvwGrmakr&_nc_oc=AdpO9vI8vq9CXbPnABKPL7sTzZhXDvJ-HZRtnlY0XswYIVUYFAwLpffJ37TfvqA0DzU&_nc_zt=23&_nc_ht=scontent.fjau4-1.fna&_nc_gid=jnMRRD5Hy6trLmL9V1aWFw&_nc_ss=7b2a8&oh=00_AQL_JJmApUjn24VFsReoaIK1vn_iI0q2ILNfHYMp5xQW5A&oe=6A98E8BD" class="w-full h-full object-cover rounded-xl" alt="Andy TV Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%23eab308\'><polygon points=\'5 3 19 12 5 21 5 3\'/></svg>'" />
+          <span class="absolute -bottom-1 -right-1 text-[10px]">🇵🇪</span>
+        </button>
+
+        <!-- Main Navigation Links -->
+        <nav class="flex flex-col items-center space-y-2">
+          <button data-tab="home" class="p-2.5 rounded-xl bg-[#eab308] text-black shadow-lg shadow-yellow-500/20 transition-all duration-200 cursor-pointer" title="Inicio">
+            <i data-lucide="home" class="w-5 h-5"></i>
+          </button>
+
+          <button onclick="window.app.openSearch()" class="p-2.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-all duration-200 cursor-pointer" title="Buscar (⌘K)">
+            <i data-lucide="search" class="w-5 h-5"></i>
+          </button>
+
+          <button data-tab="explore" class="p-2.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-all duration-200 cursor-pointer" title="Explorar Catálogo">
+            <i data-lucide="compass" class="w-5 h-5"></i>
+          </button>
+
+          <div class="w-6 h-px bg-zinc-800 my-1"></div>
+
+          <button data-tab="movies" class="p-2.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-all duration-200 cursor-pointer" title="Películas">
+            <i data-lucide="film" class="w-5 h-5"></i>
+          </button>
+
+          <button data-tab="tv" class="p-2.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-all duration-200 cursor-pointer" title="Series de TV">
+            <i data-lucide="tv" class="w-5 h-5"></i>
+          </button>
+
+          <button data-tab="anime" class="p-2.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-all duration-200 cursor-pointer" title="Anime">
+            <i data-lucide="clapperboard" class="w-5 h-5"></i>
+          </button>
+
+          <div class="w-6 h-px bg-zinc-800 my-1"></div>
+
+          <!-- Favorites / My List -->
+          <button data-tab="favorites" class="p-2.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-all duration-200 relative cursor-pointer" title="Mi Lista">
+            <i data-lucide="bookmark" class="w-5 h-5"></i>
+            <span id="fav-count-badge" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-yellow-400 text-black text-[9px] font-black flex items-center justify-center hidden">0</span>
+          </button>
+
+          <!-- Social Networks & Creator Tab -->
+          <button data-tab="social" class="p-2.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-all duration-200 relative cursor-pointer group" title="Redes Sociales Oficiales">
+            <i data-lucide="share-2" class="w-5 h-5"></i>
+            <span class="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+            </span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Bottom Profile & Creator Actions -->
+      <div class="flex flex-col items-center space-y-3">
+        <!-- Admin Locked Action: Add Movie -->
+        <button onclick="window.app.openCreatorModal()" class="p-2.5 rounded-xl text-yellow-400/80 hover:text-yellow-300 hover:bg-yellow-400/10 transition-all cursor-pointer relative group" title="Añadir Película / Stream (Solo Admin)">
+          <i data-lucide="plus-circle" class="w-5 h-5"></i>
+          <span class="admin-status-indicator absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#0f0f10] hidden"></span>
+        </button>
+
+        <!-- Admin Quick Login/Status Toggle -->
+        <button onclick="window.app.isAdmin() ? window.app.openCreatorModal() : window.app.openAdminLoginModal()" class="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-yellow-400 text-zinc-300 hover:text-yellow-400 transition-all cursor-pointer relative" title="Acceso Administrador (Andy)">
+          <i class="admin-lock-icon w-4 h-4" data-lucide="lock"></i>
+        </button>
+
+        <button onclick="window.app.switchTab('social')" class="w-9 h-9 rounded-2xl border border-yellow-400/40 p-0.5 shadow-md hover:scale-105 transition-transform cursor-pointer overflow-hidden bg-[#141418]" title="Andy Axcel Dominguez Ccorau 🇵🇪">
+          <img src="https://scontent.fjau4-1.fna.fbcdn.net/v/t39.30808-6/729979233_122253465908263951_4502764980248591946_n.png?stp=dst-png&cstp=mx1080x1920&ctp=s1080x1920&_nc_cat=100&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=JHmo84kqR9cQ7kNvwGrmakr&_nc_oc=AdpO9vI8vq9CXbPnABKPL7sTzZhXDvJ-HZRtnlY0XswYIVUYFAwLpffJ37TfvqA0DzU&_nc_zt=23&_nc_ht=scontent.fjau4-1.fna&_nc_gid=jnMRRD5Hy6trLmL9V1aWFw&_nc_ss=7b2a8&oh=00_AQL_JJmApUjn24VFsReoaIK1vn_iI0q2ILNfHYMp5xQW5A&oe=6A98E8BD" class="w-full h-full object-cover rounded-[13px]" alt="Andy" />
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN APP CONTENT -->
+    <div class="flex-1 flex flex-col min-w-0 pl-16 sm:pl-0">
+
+      <!-- TOP HEADER -->
+      <header class="h-16 sm:h-20 px-4 sm:px-8 flex items-center justify-between border-b border-zinc-800/40 bg-[#0e0e11]/80 backdrop-blur-md sticky top-0 z-20">
+        
+        <!-- Left Brand Header on Mobile/Tablet -->
+        <div class="flex items-center space-x-3 mr-4">
+          <button onclick="window.app.switchTab('home')" class="flex items-center space-x-2 text-left group">
+            <span class="font-black text-sm sm:text-base tracking-tight text-white group-hover:text-yellow-400 transition-colors">
+              andyaxceldominguezccorau <span class="text-yellow-400">TV</span>
+            </span>
+            <span class="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full bg-red-600/20 text-red-400 border border-red-500/30 text-[11px] font-black">
+              <span>🇵🇪</span>
+              <span class="hidden sm:inline">PERÚ</span>
+            </span>
+          </button>
+        </div>
+
+        <!-- Search trigger pill -->
+        <div class="flex-1 max-w-lg hidden md:block">
+          <button onclick="window.app.openSearch()" class="w-full flex items-center justify-between bg-[#141418] hover:bg-[#1c1c22] border border-zinc-800/80 rounded-2xl px-4 py-2.5 text-zinc-400 text-sm transition-all duration-200 shadow-inner group cursor-pointer">
+            <div class="flex items-center space-x-3 truncate">
+              <i data-lucide="search" class="w-4 h-4 text-zinc-500 group-hover:text-yellow-400 transition-colors"></i>
+              <span class="truncate text-xs sm:text-sm">Buscar películas, series, anime, ID (#avatar-2)...</span>
+            </div>
+            <kbd class="hidden sm:inline-flex items-center space-x-1 bg-zinc-800/80 border border-zinc-700/60 rounded-lg px-2 py-0.5 text-[10px] font-mono text-zinc-300 shadow-sm">
+              <span>⌘</span><span>K</span>
+            </kbd>
+          </button>
+        </div>
+
+        <!-- Top Right Actions & Quick Social Bar -->
+        <div class="flex items-center space-x-2 sm:space-x-3">
+          
+          <button onclick="window.app.openSearch()" class="md:hidden p-2.5 rounded-xl bg-[#141418] border border-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer" title="Buscar">
+            <i data-lucide="search" class="w-4 h-4"></i>
+          </button>
+
+          <!-- Fast Social Links in Header -->
+          <a href="https://www.tiktok.com/@andyaxceldcc" target="_blank" rel="noopener noreferrer" class="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-zinc-900 hover:bg-[#ff0050]/20 hover:text-[#ff0050] border border-zinc-800 text-zinc-300 text-xs font-bold transition-all flex items-center space-x-1.5" title="TikTok Oficial">
+            <svg class="w-4 h-4 fill-current text-[#ff0050]" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+            <span class="hidden lg:inline text-xs">TikTok</span>
+          </a>
+
+          <a href="https://www.youtube.com/@andyaxceldcc" target="_blank" rel="noopener noreferrer" class="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-zinc-900 hover:bg-red-600/20 hover:text-red-400 border border-zinc-800 text-zinc-300 text-xs font-bold transition-all flex items-center space-x-1.5" title="YouTube Oficial">
+            <svg class="w-4 h-4 fill-current text-red-500" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            <span class="hidden lg:inline text-xs">YouTube</span>
+          </a>
+
+          <!-- Admin Access Header Button -->
+          <button onclick="window.app.isAdmin() ? window.app.openCreatorModal() : window.app.openAdminLoginModal()" class="px-3 py-1.5 rounded-xl bg-zinc-900 hover:bg-yellow-400/20 border border-zinc-700 hover:border-yellow-400 text-zinc-300 hover:text-yellow-400 text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer" title="Panel de Administrador (Andy)">
+            <i class="admin-lock-icon w-3.5 h-3.5" data-lucide="lock"></i>
+            <span class="hidden sm:inline">Admin</span>
+            <span class="admin-status-indicator text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 font-black hidden">andy</span>
+          </button>
+
+          <button onclick="window.app.switchTab('social')" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-red-600 to-amber-500 text-white text-xs font-black transition-all flex items-center space-x-1.5 shadow-md shadow-red-500/20 hover:opacity-95 cursor-pointer">
+            <i data-lucide="heart" class="w-3.5 h-3.5 fill-white"></i>
+            <span>Redes Sociales</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- TAB VIEWS CONTAINER -->
+      <main class="flex-1 px-4 sm:px-8 py-6 max-w-7xl w-full mx-auto space-y-10">
+
+        <!-- 1. HOME VIEW -->
+        <div id="view-home" class="tab-view space-y-10">
+          
+          <!-- HERO BANNER -->
+          <div class="relative rounded-3xl overflow-hidden bg-gradient-to-t from-black via-zinc-950/60 to-transparent border border-zinc-800/80 shadow-2xl min-h-[360px] sm:min-h-[460px] flex items-end p-6 sm:p-12">
+            <!-- Background Image -->
+            <img id="hero-img" src="https://image.tmdb.org/t/p/original/8sMmAmwh2xRURq6949qPt09x3Me.jpg" onerror="this.onerror=null; this.src=getPosterFallback('Avatar: El Sentido del Agua', 'Ciencia Ficción', '2022');" alt="Hero Featured" class="absolute inset-0 w-full h-full object-cover -z-10 brightness-75 transition-all duration-700" />
+            
+            <!-- Vignette & Glow Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0e0e11] via-[#0e0e11]/60 to-transparent -z-10"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-[#0e0e11] via-[#0e0e11]/40 to-transparent -z-10"></div>
+
+            <!-- Hero Meta Content -->
+            <div class="max-w-2xl space-y-4">
+              <div class="flex items-center space-x-3 flex-wrap gap-2">
+                <span id="hero-type-badge" class="px-3 py-1 rounded-full bg-yellow-400 text-black font-black text-xs tracking-wider uppercase shadow-md">
+                  ESTRENO 4K UHD
+                </span>
+                <span class="px-3 py-1 rounded-full bg-red-600/30 text-red-300 border border-red-500/40 text-xs font-black flex items-center space-x-1">
+                  <span>🇵🇪</span>
+                  <span>andyaxceldominguezccorau TV</span>
+                </span>
+                <span class="text-xs font-bold text-emerald-400 flex items-center space-x-1">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping mr-1"></span>
+                  Multi-Servidor Activo
+                </span>
+              </div>
+
+              <h1 id="hero-title" class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+                Avatar: El Sentido del Agua
+              </h1>
+
+              <p class="text-zinc-300 text-xs sm:text-sm line-clamp-2 max-w-xl font-normal leading-relaxed">
+                Disfruta de la mejor calidad en streaming en 4K Ultra HD y 1080p Full HD con audio en Español Latino y múltiples servidores de respaldo.
+              </p>
+
+              <!-- Hero Actions -->
+              <div class="flex items-center space-x-3 pt-2 flex-wrap gap-2">
+                <button id="hero-watch-btn" class="px-6 py-3 rounded-2xl bg-yellow-400 hover:bg-yellow-300 text-black font-extrabold text-sm flex items-center space-x-2 transition-transform active:scale-95 shadow-xl shadow-yellow-400/20 cursor-pointer">
+                  <i data-lucide="play" class="w-4 h-4 fill-black"></i>
+                  <span>Ver Película Ahora</span>
+                </button>
+
+                <button id="hero-details-btn" class="px-5 py-3 rounded-2xl bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-700 text-white font-bold text-sm flex items-center space-x-2 transition-all cursor-pointer">
+                  <i data-lucide="info" class="w-4 h-4 text-zinc-400"></i>
+                  <span>Detalles</span>
+                </button>
+
+                <button id="hero-fav-btn" class="p-3 rounded-2xl bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 transition-all cursor-pointer" title="Guardar en Mi Lista">
+                  <i data-lucide="bookmark" class="w-4 h-4"></i>
+                </button>
+
+                <button id="hero-shuffle-btn" class="p-3 rounded-2xl bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 transition-all cursor-pointer" title="Siguiente Destacada">
+                  <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- QUICK CATEGORY PILLS BAR -->
+          <div class="flex items-center space-x-3 overflow-x-auto pb-2 no-scrollbar">
+            <button onclick="window.app.switchTab('movies')" class="flex-shrink-0 px-4 py-2 rounded-2xl bg-gradient-to-r from-red-600/20 to-amber-600/20 hover:from-red-600/30 hover:to-amber-600/30 border border-red-500/30 text-white text-xs font-black flex items-center space-x-2 transition-all">
+              <i data-lucide="film" class="w-4 h-4 text-yellow-400"></i>
+              <span>Películas 4K</span>
+            </button>
+            <button onclick="window.app.switchTab('tv')" class="flex-shrink-0 px-4 py-2 rounded-2xl bg-gradient-to-r from-blue-600/20 to-indigo-600/20 hover:from-blue-600/30 hover:to-indigo-600/30 border border-blue-500/30 text-white text-xs font-black flex items-center space-x-2 transition-all">
+              <i data-lucide="tv" class="w-4 h-4 text-blue-400"></i>
+              <span>Series HD</span>
+            </button>
+            <button onclick="window.app.switchTab('anime')" class="flex-shrink-0 px-4 py-2 rounded-2xl bg-gradient-to-r from-pink-600/20 to-purple-600/20 hover:from-pink-600/30 hover:to-purple-600/30 border border-pink-500/30 text-white text-xs font-black flex items-center space-x-2 transition-all">
+              <i data-lucide="sparkles" class="w-4 h-4 text-pink-400"></i>
+              <span>Anime Japonés</span>
+            </button>
+            <button onclick="window.app.switchTab('explore')" class="flex-shrink-0 px-4 py-2 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 text-xs font-bold flex items-center space-x-2 transition-all">
+              <i data-lucide="compass" class="w-4 h-4 text-yellow-400"></i>
+              <span>Explorar Todo (33 Títulos)</span>
+            </button>
+            <button onclick="window.app.switchTab('social')" class="flex-shrink-0 px-4 py-2 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 text-xs font-bold flex items-center space-x-2 transition-all">
+              <span class="text-yellow-400">🇵🇪</span>
+              <span>Redes Oficiales Andy Axcel</span>
+            </button>
+          </div>
+
+          <!-- TRENDING SECTION -->
+          <section class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <i data-lucide="flame" class="w-5 h-5 text-yellow-400"></i>
+                <h2 class="text-lg sm:text-xl font-bold text-white tracking-tight">Tendencias en Perú 🇵🇪</h2>
+              </div>
+              <button onclick="window.app.switchTab('explore')" class="text-xs font-semibold text-yellow-400 hover:underline">Ver todo</button>
+            </div>
+            
+            <div id="row-trending" class="flex space-x-4 overflow-x-auto pb-4 no-scrollbar">
+              <!-- Rendered by app.js -->
+            </div>
+          </section>
+
+          <!-- LATEST MOVIES SECTION -->
+          <section class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <i data-lucide="film" class="w-5 h-5 text-yellow-400"></i>
+                <h2 class="text-lg sm:text-xl font-bold text-white tracking-tight">Películas de Estreno 4K</h2>
+              </div>
+              <button onclick="window.app.switchTab('movies')" class="text-xs font-semibold text-yellow-400 hover:underline">Explorar Películas</button>
+            </div>
+
+            <div id="row-latest-movies" class="flex space-x-4 overflow-x-auto pb-4 no-scrollbar">
+              <!-- Rendered by app.js -->
+            </div>
+          </section>
+
+          <!-- SERIES SECTION -->
+          <section class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <i data-lucide="tv" class="w-5 h-5 text-yellow-400"></i>
+                <h2 class="text-lg sm:text-xl font-bold text-white tracking-tight">Series Más Vistas</h2>
+              </div>
+              <button onclick="window.app.switchTab('tv')" class="text-xs font-semibold text-yellow-400 hover:underline">Explorar Series</button>
+            </div>
+
+            <div id="row-latest-tv" class="flex space-x-4 overflow-x-auto pb-4 no-scrollbar">
+              <!-- Rendered by app.js -->
+            </div>
+          </section>
+
+          <!-- ANIME SECTION -->
+          <section class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <i data-lucide="clapperboard" class="w-5 h-5 text-yellow-400"></i>
+                <h2 class="text-lg sm:text-xl font-bold text-white tracking-tight">Anime en Emisión</h2>
+              </div>
+              <button onclick="window.app.switchTab('anime')" class="text-xs font-semibold text-yellow-400 hover:underline">Explorar Anime</button>
+            </div>
+
+            <div id="row-latest-anime" class="flex space-x-4 overflow-x-auto pb-4 no-scrollbar">
+              <!-- Rendered by app.js -->
+            </div>
+          </section>
+
+        </div>
+
+        <!-- 2. EXPLORE VIEW -->
+        <div id="view-explore" class="tab-view hidden space-y-6">
+          <div class="flex items-center justify-between border-b border-zinc-800 pb-4">
+            <div>
+              <h1 class="text-2xl sm:text-3xl font-black text-white">Catálogo Completo</h1>
+              <p class="text-xs sm:text-sm text-zinc-400">Explora todas las películas, series y animes disponibles en andyaxceldominguezccorau TV 🇵🇪</p>
+            </div>
+            <button onclick="window.app.openSearch()" class="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold flex items-center space-x-2">
+              <i data-lucide="search" class="w-4 h-4 text-yellow-400"></i>
+              <span>Buscar por Filtros</span>
+            </button>
+          </div>
+
+          <div id="grid-explore" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- 3. MOVIES VIEW -->
+        <div id="view-movies" class="tab-view hidden space-y-6">
+          <div class="border-b border-zinc-800 pb-4">
+            <h1 class="text-2xl sm:text-3xl font-black text-white">Películas en 4K UHD</h1>
+            <p class="text-xs sm:text-sm text-zinc-400">Las mejores películas en alta definición con servidores ultra rápidos.</p>
+          </div>
+
+          <div id="grid-movies" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- 4. TV SHOWS VIEW -->
+        <div id="view-tv" class="tab-view hidden space-y-6">
+          <div class="border-b border-zinc-800 pb-4">
+            <h1 class="text-2xl sm:text-3xl font-black text-white">Series de Televisión</h1>
+            <p class="text-xs sm:text-sm text-zinc-400">Temporadas completas y episodios en calidad HD.</p>
+          </div>
+
+          <div id="grid-tv" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- 5. ANIME VIEW -->
+        <div id="view-anime" class="tab-view hidden space-y-6">
+          <div class="border-b border-zinc-800 pb-4">
+            <h1 class="text-2xl sm:text-3xl font-black text-white">Anime & Animación</h1>
+            <p class="text-xs sm:text-sm text-zinc-400">Estrenos de temporada y clásicos con audio original y subtítulos.</p>
+          </div>
+
+          <div id="grid-anime" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- 6. FAVORITES VIEW -->
+        <div id="view-favorites" class="tab-view hidden space-y-6">
+          <div class="border-b border-zinc-800 pb-4">
+            <h1 class="text-2xl sm:text-3xl font-black text-white">Mi Lista de Favoritos</h1>
+            <p class="text-xs sm:text-sm text-zinc-400">Títulos que has guardado para ver más tarde.</p>
+          </div>
+
+          <div id="fav-empty-state" class="text-center py-16 space-y-4 hidden">
+            <div class="w-16 h-16 rounded-full bg-zinc-800/80 flex items-center justify-center mx-auto text-zinc-500">
+              <i data-lucide="bookmark" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white">Tu lista está vacía</h3>
+            <p class="text-xs text-zinc-400 max-w-sm mx-auto">Explora el catálogo y presiona el botón de guardar en cualquier película o serie.</p>
+            <button onclick="window.app.switchTab('home')" class="px-5 py-2.5 rounded-xl bg-yellow-400 text-black font-bold text-xs">
+              Explorar Catálogo
+            </button>
+          </div>
+
+          <div id="grid-favorites" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- 7. REDES SOCIALES & CREADOR VIEW -->
+        <div id="view-social" class="tab-view hidden space-y-8">
+          
+          <!-- Creator Hero Card -->
+          <div class="relative rounded-3xl bg-gradient-to-r from-[#141418] via-[#1a1a24] to-[#141418] border border-zinc-800 p-6 sm:p-10 shadow-2xl overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 opacity-10 pointer-events-none text-9xl">
+              🇵🇪
+            </div>
+
+            <div class="flex flex-col md:flex-row items-center md:items-start gap-6 text-center md:text-left relative z-10">
+              <div class="relative">
+                <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-tr from-red-600 via-amber-500 to-yellow-400 p-1 shadow-2xl shadow-red-500/20">
+                  <div class="w-full h-full bg-[#0e0e11] rounded-[22px] flex items-center justify-center font-black text-3xl text-yellow-400">
+                    🇵🇪
+                  </div>
+                </div>
+                <div class="absolute -bottom-2 -right-2 bg-emerald-500 text-black text-[10px] font-black px-2 py-0.5 rounded-full border-2 border-[#0e0e11]">
+                  OFICIAL
+                </div>
+              </div>
+
+              <div class="space-y-2 flex-1">
+                <div class="flex flex-wrap items-center justify-center md:justify-start gap-2">
+                  <h1 class="text-2xl sm:text-3xl font-black text-white">Andy Axcel Dominguez Ccorau</h1>
+                  <span class="px-2.5 py-0.5 rounded-full bg-red-600/20 text-red-400 border border-red-500/30 text-xs font-black flex items-center space-x-1">
+                    <span>🇵🇪</span>
+                    <span>PERÚ</span>
+                  </span>
+                </div>
+                <p class="text-sm font-semibold text-yellow-400">
+                  Creador y Fundador de andyaxceldominguezccorau TV
+                </p>
+                <p class="text-xs sm:text-sm text-zinc-400 max-w-2xl leading-relaxed">
+                  Bienvenido a la comunidad oficial. Sígueme en todas mis redes sociales para enterarte de nuevos estrenos en 4K, actualizaciones de servidores y contenido exclusivo.
+                </p>
+
+                <!-- Fast Actions -->
+                <div class="flex flex-wrap items-center justify-center md:justify-start gap-2.5 pt-3">
+                  <a href="https://wa.me/?text=¡Miren%20andyaxceldominguezccorau%20TV%20🇵🇪!%20Películas%20y%20series%20en%204K%20gratis" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-black transition-all flex items-center space-x-1.5 shadow-lg shadow-emerald-500/20">
+                    <svg class="w-4 h-4 fill-black" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824zm-3.423-14.416c-6.627 0-12 5.373-12 12 0 2.158.57 4.187 1.564 5.946l-1.657 6.054 6.195-1.625c1.705.937 3.662 1.47 5.748 1.47 6.627 0 12-5.373 12-12 0-6.627-5.373-12-12-12z"/></svg>
+                    <span>Compartir en WhatsApp</span>
+                  </a>
+
+                  <button onclick="window.app.copyToClipboard(window.location.href, '¡Enlace de andyaxceldominguezccorau TV copiado!')" class="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-bold border border-zinc-700 flex items-center space-x-1.5 transition-all">
+                    <i data-lucide="link" class="w-4 h-4 text-yellow-400"></i>
+                    <span>Copiar Enlace de la Plataforma</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- All Social Networks Grid -->
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <h2 class="text-xl font-black text-white flex items-center space-x-2">
+                <i data-lucide="globe" class="w-5 h-5 text-yellow-400"></i>
+                <span>Todas Mis Redes Sociales Oficiales</span>
+              </h2>
+              <span class="text-xs text-zinc-400">9 Plataformas Conectadas</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              
+              <!-- TikTok -->
+              <div class="p-5 rounded-3xl bg-[#141418] hover:bg-[#181820] border border-zinc-800/80 hover:border-[#ff0050]/50 transition-all group flex flex-col justify-between space-y-4 shadow-lg">
+                <div class="flex items-center justify-between">
+                  <div class="w-12 h-12 rounded-2xl bg-black text-[#ff0050] flex items-center justify-center border border-zinc-700 shadow-md">
+                    <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+                  </div>
+                  <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300">Videos & Clips</span>
+                </div>
+                <div>
+                  <h3 class="text-base font-extrabold text-white group-hover:text-[#ff0050] transition-colors">TikTok</h3>
+                  <p class="text-xs text-zinc-400 font-mono mt-0.5">@andyaxceldcc</p>
+                </div>
+                <div class="flex items-center space-x-2 pt-2 border-t border-zinc-800/60">
+                  <a href="https://www.tiktok.com/@andyaxceldcc" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 rounded-xl bg-black hover:bg-zinc-900 border border-zinc-700 text-white text-xs font-bold text-center transition-all flex items-center justify-center space-x-2 shadow">
+                    <svg class="w-4 h-4 fill-current text-[#ff0050]" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+                    <span>Seguir en TikTok</span>
+                  </a>
+                  <button onclick="window.app.copyToClipboard('@andyaxceldcc', 'Usuario de TikTok copiado!')" class="p-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs" title="Copiar Usuario">
+                    <i data-lucide="copy" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- YouTube -->
+              <div class="p-5 rounded-3xl bg-[#141418] hover:bg-[#181820] border border-zinc-800/80 hover:border-red-500/50 transition-all group flex flex-col justify-between space-y-4 shadow-lg">
+                <div class="flex items-center justify-between">
+                  <div class="w-12 h-12 rounded-2xl bg-red-600 text-white flex items-center justify-center shadow-lg shadow-red-600/30">
+                    <svg class="w-6 h-6 fill-current text-white" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                  </div>
+                  <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300">Canal Oficial</span>
+                </div>
+                <div>
+                  <h3 class="text-base font-extrabold text-white group-hover:text-red-400 transition-colors">YouTube</h3>
+                  <p class="text-xs text-zinc-400 font-mono mt-0.5">@andyaxceldcc</p>
+                </div>
+                <div class="flex items-center space-x-2 pt-2 border-t border-zinc-800/60">
+                  <a href="https://www.youtube.com/@andyaxceldcc" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold text-center transition-colors flex items-center justify-center space-x-2 shadow-lg shadow-red-600/20">
+                    <svg class="w-4 h-4 fill-current text-white" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                    <span>Suscribirse al Canal</span>
+                  </a>
+                  <button onclick="window.app.copyToClipboard('@andyaxceldcc', 'Canal de YouTube copiado!')" class="p-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs" title="Copiar Canal">
+                    <i data-lucide="copy" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Facebook -->
+              <div class="p-5 rounded-3xl bg-[#141418] hover:bg-[#181820] border border-zinc-800/80 hover:border-blue-500/50 transition-all group flex flex-col justify-between space-y-4 shadow-lg">
+                <div class="flex items-center justify-between">
+                  <div class="w-12 h-12 rounded-2xl bg-[#1877f2] text-white flex items-center justify-center shadow-lg shadow-blue-600/30">
+                    <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                  </div>
+                  <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300">Página Oficial</span>
+                </div>
+                <div>
+                  <h3 class="text-base font-extrabold text-white group-hover:text-blue-400 transition-colors">Facebook</h3>
+                  <p class="text-xs text-zinc-400 font-mono mt-0.5">andyaxceldominguezccorau</p>
+                </div>
+                <div class="flex items-center space-x-2 pt-2 border-t border-zinc-800/60">
+                  <a href="https://www.facebook.com/andyaxceldominguezccorau" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 rounded-xl bg-[#1877f2] hover:bg-[#166fe5] text-white text-xs font-bold text-center transition-colors flex items-center justify-center space-x-2 shadow-lg shadow-blue-600/20">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    <span>Visitar Facebook</span>
+                  </a>
+                  <button onclick="window.app.copyToClipboard('https://www.facebook.com/andyaxceldominguezccorau', 'Enlace de Facebook copiado!')" class="p-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs" title="Copiar Enlace">
+                    <i data-lucide="copy" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Instagram -->
+              <div class="p-5 rounded-3xl bg-[#141418] hover:bg-[#181820] border border-zinc-800/80 hover:border-pink-500/50 transition-all group flex flex-col justify-between space-y-4 shadow-lg">
+                <div class="flex items-center justify-between">
+                  <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] text-white flex items-center justify-center shadow-lg shadow-pink-600/30">
+                    <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                  </div>
+                  <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300">Fotos & Stories</span>
+                </div>
+                <div>
+                  <h3 class="text-base font-extrabold text-white group-hover:text-pink-400 transition-colors">Instagram</h3>
+                  <p class="text-xs text-zinc-400 font-mono mt-0.5">@andyaxceldcc</p>
+                </div>
+                <div class="flex items-center space-x-2 pt-2 border-t border-zinc-800/60">
+                  <a href="https://www.instagram.com/andyaxceldcc" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#f09433] via-[#dc2743] to-[#bc1888] hover:opacity-90 text-white text-xs font-bold text-center transition-opacity flex items-center justify-center space-x-2 shadow-lg shadow-pink-600/20">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    <span>Seguir en Instagram</span>
+                  </a>
+                  <button onclick="window.app.copyToClipboard('@andyaxceldcc', 'Usuario de Instagram copiado!')" class="p-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs" title="Copiar Usuario">
+                    <i data-lucide="copy" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- WhatsApp -->
+              <div class="p-5 rounded-3xl bg-[#141418] hover:bg-[#181820] border border-zinc-800/80 hover:border-emerald-500/50 transition-all group flex flex-col justify-between space-y-4 shadow-lg">
+                <div class="flex items-center justify-between">
+                  <div class="w-12 h-12 rounded-2xl bg-[#25d366] text-white flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                    <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824zm-3.423-14.416c-6.627 0-12 5.373-12 12 0 2.158.57 4.187 1.564 5.946l-1.657 6.054 6.195-1.625c1.705.937 3.662 1.47 5.748 1.47 6.627 0 12-5.373 12-12 0-6.627-5.373-12-12-12z"/></svg>
+                  </div>
+                  <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300">Chat Directo</span>
+                </div>
+                <div>
+                  <h3 class="text-base font-extrabold text-white group-hover:text-emerald-400 transition-colors">WhatsApp</h3>
+                  <p class="text-xs text-zinc-400 font-mono mt-0.5">Comunidad & Contacto</p>
+                </div>
+                <div class="flex items-center space-x-2 pt-2 border-t border-zinc-800/60">
+                  <a href="https://wa.me/?text=¡Hola!%20Estoy%20viendo%20andyaxceldominguezccorau%20TV%20🇵🇪" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 rounded-xl bg-[#25d366] hover:bg-[#20bd5a] text-black text-xs font-black text-center transition-colors flex items-center justify-center space-x-2 shadow-lg shadow-emerald-500/20">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824zm-3.423-14.416c-6.627 0-12 5.373-12 12 0 2.158.57 4.187 1.564 5.946l-1.657 6.054 6.195-1.625c1.705.937 3.662 1.47 5.748 1.47 6.627 0 12-5.373 12-12 0-6.627-5.373-12-12-12z"/></svg>
+                    <span>Abrir WhatsApp</span>
+                  </a>
+                  <button onclick="window.app.copyToClipboard('https://wa.me/?text=andyaxceldominguezccorau%20TV%20🇵🇪', 'Enlace de WhatsApp copiado!')" class="p-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs" title="Copiar Enlace">
+                    <i data-lucide="copy" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Telegram -->
+              <div class="p-5 rounded-3xl bg-[#141418] hover:bg-[#181820] border border-zinc-800/80 hover:border-sky-500/50 transition-all group flex flex-col justify-between space-y-4 shadow-lg">
+                <div class="flex items-center justify-between">
+                  <div class="w-12 h-12 rounded-2xl bg-[#229ed9] text-white flex items-center justify-center shadow-lg shadow-sky-500/30">
+                    <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                  </div>
+                  <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300">Canal de Avisos</span>
+                </div>
+                <div>
+                  <h3 class="text-base font-extrabold text-white group-hover:text-sky-400 transition-colors">Telegram</h3>
+                  <p class="text-xs text-zinc-400 font-mono mt-0.5">t.me/andyaxceldcc</p>
+                </div>
+                <div class="flex items-center space-x-2 pt-2 border-t border-zinc-800/60">
+                  <a href="https://t.me/andyaxceldcc" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 rounded-xl bg-[#229ed9] hover:bg-[#1d8fc4] text-white text-xs font-bold text-center transition-colors flex items-center justify-center space-x-2 shadow-lg shadow-sky-500/20">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                    <span>Unirse a Telegram</span>
+                  </a>
+                  <button onclick="window.app.copyToClipboard('https://t.me/andyaxceldcc', 'Enlace de Telegram copiado!')" class="p-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs" title="Copiar Enlace">
+                    <i data-lucide="copy" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Discord -->
+              <div class="p-5 rounded-3xl bg-[#141418] hover:bg-[#181820] border border-zinc-800/80 hover:border-indigo-500/50 transition-all group flex flex-col justify-between space-y-4 shadow-lg">
+                <div class="flex items-center justify-between">
+                  <div class="w-12 h-12 rounded-2xl bg-[#5865f2] text-white flex items-center justify-center shadow-lg shadow-indigo-600/30">
+                    <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+                  </div>
+                  <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300">Servidor VIP</span>
+                </div>
+                <div>
+                  <h3 class="text-base font-extrabold text-white group-hover:text-indigo-400 transition-colors">Discord</h3>
+                  <p class="text-xs text-zinc-400 font-mono mt-0.5">andyaxceldcc</p>
+                </div>
+                <div class="flex items-center space-x-2 pt-2 border-t border-zinc-800/60">
+                  <a href="https://discord.gg/andyaxceldcc" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 rounded-xl bg-[#5865f2] hover:bg-[#4752c4] text-white text-xs font-bold text-center transition-colors flex items-center justify-center space-x-2 shadow-lg shadow-indigo-600/20">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+                    <span>Entrar a Discord</span>
+                  </a>
+                  <button onclick="window.app.copyToClipboard('andyaxceldcc', 'Usuario de Discord copiado!')" class="p-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs" title="Copiar Usuario">
+                    <i data-lucide="copy" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- GitHub -->
+              <div class="p-5 rounded-3xl bg-[#141418] hover:bg-[#181820] border border-zinc-800/80 hover:border-zinc-400/50 transition-all group flex flex-col justify-between space-y-4 shadow-lg">
+                <div class="flex items-center justify-between">
+                  <div class="w-12 h-12 rounded-2xl bg-[#24292e] text-white flex items-center justify-center border border-zinc-700 shadow-md">
+                    <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                  </div>
+                  <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300">Desarrollador</span>
+                </div>
+                <div>
+                  <h3 class="text-base font-extrabold text-white group-hover:text-yellow-400 transition-colors">GitHub</h3>
+                  <p class="text-xs text-zinc-400 font-mono mt-0.5">@andyaxceldcc</p>
+                </div>
+                <div class="flex items-center space-x-2 pt-2 border-t border-zinc-800/60">
+                  <a href="https://github.com/andyaxceldcc" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 rounded-xl bg-[#24292e] hover:bg-zinc-800 border border-zinc-700 text-white text-xs font-bold text-center transition-colors flex items-center justify-center space-x-2 shadow">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                    <span>Ver Proyectos</span>
+                  </a>
+                  <button onclick="window.app.copyToClipboard('https://github.com/andyaxceldcc', 'GitHub copiado!')" class="p-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs" title="Copiar Enlace">
+                    <i data-lucide="copy" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- X / Twitter -->
+              <div class="p-5 rounded-3xl bg-[#141418] hover:bg-[#181820] border border-zinc-800/80 hover:border-zinc-400/50 transition-all group flex flex-col justify-between space-y-4 shadow-lg">
+                <div class="flex items-center justify-between">
+                  <div class="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center border border-zinc-700 shadow-md">
+                    <svg class="w-5 h-5 fill-current text-white" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                  </div>
+                  <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300">Noticias</span>
+                </div>
+                <div>
+                  <h3 class="text-base font-extrabold text-white group-hover:text-yellow-400 transition-colors">X (Twitter)</h3>
+                  <p class="text-xs text-zinc-400 font-mono mt-0.5">@andyaxceldcc</p>
+                </div>
+                <div class="flex items-center space-x-2 pt-2 border-t border-zinc-800/60">
+                  <a href="https://x.com/andyaxceldcc" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 rounded-xl bg-black hover:bg-zinc-900 border border-zinc-700 text-white text-xs font-bold text-center transition-colors flex items-center justify-center space-x-2 shadow">
+                    <svg class="w-4 h-4 fill-current text-white" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    <span>Seguir en X</span>
+                  </a>
+                  <button onclick="window.app.copyToClipboard('@andyaxceldcc', 'Usuario de X copiado!')" class="p-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs" title="Copiar Usuario">
+                    <i data-lucide="copy" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+
+      <!-- OFFICIAL FOOTER WITH PERU BRANDING -->
+      <footer class="border-t border-zinc-800/80 bg-[#0c0c0f] py-10 px-4 sm:px-8 mt-16">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+          
+          <div class="space-y-1">
+            <div class="flex items-center justify-center md:justify-start space-x-2">
+              <span class="font-extrabold text-base text-white">andyaxceldominguezccorau <span class="text-yellow-400">TV</span></span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-red-600/20 text-red-400 border border-red-500/30 font-black">🇵🇪 PERÚ</span>
+            </div>
+            <p class="text-xs text-zinc-400">
+              Plataforma de streaming 4K y HD creada por <strong class="text-zinc-200">Andy Axcel Dominguez Ccorau</strong>. Todos los derechos reservados.
+            </p>
+          </div>
+
+          <!-- Bottom Social Badges -->
+          <div class="flex flex-wrap items-center justify-center gap-2">
+            <a href="https://www.tiktok.com/@andyaxceldcc" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-xl bg-zinc-900 hover:bg-[#ff0050] hover:text-white border border-zinc-800 text-zinc-300 text-xs font-bold transition-all flex items-center space-x-1.5">
+              <svg class="w-3.5 h-3.5 fill-current text-[#ff0050]" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+              <span>TikTok</span>
+            </a>
+            <a href="https://www.youtube.com/@andyaxceldcc" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-xl bg-zinc-900 hover:bg-red-600 hover:text-white border border-zinc-800 text-zinc-300 text-xs font-bold transition-all flex items-center space-x-1.5">
+              <svg class="w-3.5 h-3.5 fill-current text-red-500" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+              <span>YouTube</span>
+            </a>
+            <a href="https://www.facebook.com/andyaxceldominguezccorau" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-xl bg-zinc-900 hover:bg-blue-600 hover:text-white border border-zinc-800 text-zinc-300 text-xs font-bold transition-all flex items-center space-x-1.5">
+              <svg class="w-3.5 h-3.5 fill-current text-blue-400" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              <span>Facebook</span>
+            </a>
+            <a href="https://www.instagram.com/andyaxceldcc" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-xl bg-zinc-900 hover:bg-pink-600 hover:text-white border border-zinc-800 text-zinc-300 text-xs font-bold transition-all flex items-center space-x-1.5">
+              <svg class="w-3.5 h-3.5 fill-current text-pink-400" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+              <span>Instagram</span>
+            </a>
+            <a href="https://wa.me/?text=Miren%20andyaxceldominguezccorau%20TV%20🇵🇪%20Streaming%204K" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold transition-all flex items-center space-x-1.5 shadow-lg shadow-emerald-500/20">
+              <svg class="w-3.5 h-3.5 fill-black" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824zm-3.423-14.416c-6.627 0-12 5.373-12 12 0 2.158.57 4.187 1.564 5.946l-1.657 6.054 6.195-1.625c1.705.937 3.662 1.47 5.748 1.47 6.627 0 12-5.373 12-12 0-6.627-5.373-12-12-12z"/></svg>
+              <span>WhatsApp</span>
+            </a>
+          </div>
+
+        </div>
+      </footer>
+
+    </div>
+
+  </div>
+
+  <!-- VIDEO PLAYER MODAL -->
+  <div id="video-player-modal" class="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 hidden overflow-hidden">
+    <!-- Atmospheric Movie Backdrop Background (No more black void) -->
+    <img id="player-modal-backdrop-bg" src="" alt="Fondo de la Película" class="absolute inset-0 w-full h-full object-cover blur-3xl scale-115 opacity-60 transition-all duration-700 pointer-events-none" />
+    <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/80 to-black/85 pointer-events-none"></div>
+    
+    <div class="relative z-10 bg-[#141418]/95 backdrop-blur-xl border border-zinc-700/80 rounded-3xl w-full max-w-5xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.9)] flex flex-col max-h-[95vh]">
+      
+      <!-- Modal Header -->
+      <div class="px-5 py-3.5 bg-[#16161c]/90 border-b border-zinc-800/80 flex items-center justify-between backdrop-blur-md">
+        <div class="flex items-center space-x-3 truncate">
+          <div class="w-2 h-8 rounded-full bg-yellow-400"></div>
+          <div class="truncate">
+            <h2 id="player-movie-title" class="text-sm sm:text-base font-bold text-white truncate">Reproduciendo Video</h2>
+            <p id="player-movie-meta" class="text-[11px] text-zinc-400">4K Ultra HD • Servidor Seleccionado</p>
+          </div>
+        </div>
+        
+        <div class="flex items-center space-x-2 flex-shrink-0">
+          <!-- Live Views counter -->
+          <div class="px-2.5 py-1.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-bold flex items-center space-x-1.5">
+            <i data-lucide="eye" class="w-3.5 h-3.5 text-blue-400"></i>
+            <span id="player-modal-views-count">0 vistas</span>
+          </div>
+
+          <!-- Live Like button -->
+          <button id="player-modal-like-btn" onclick="window.app.toggleCurrentPlayingLike()" class="px-2.5 py-1.5 rounded-xl bg-zinc-800 hover:bg-rose-500/20 text-zinc-300 hover:text-rose-400 border border-zinc-700/80 text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer" title="Me gusta">
+            <i data-lucide="heart" id="player-modal-like-icon" class="w-3.5 h-3.5 text-zinc-400"></i>
+            <span id="player-modal-likes-count">0</span>
+          </button>
+
+          <a id="player-single-page-link" href="#" class="px-3 py-1.5 rounded-xl bg-zinc-800 hover:bg-yellow-400 hover:text-black text-zinc-300 text-xs font-bold transition-all hidden">
+            Página .HTML
+          </a>
+          <button id="player-download-html-link" class="p-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs cursor-pointer" title="Descargar archivo .HTML">
+            <i data-lucide="download" class="w-4 h-4"></i>
+          </button>
+          <button onclick="window.app.closePlayer()" class="p-2 rounded-xl bg-zinc-800 hover:bg-red-600 hover:text-white text-zinc-400 transition-colors cursor-pointer" title="Cerrar Reproductor">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Player Screen Container with Movie Background Artwork -->
+      <div id="player-screen-wrapper" class="aspect-video w-full bg-zinc-950 flex items-center justify-center relative overflow-hidden shadow-inner">
+        <!-- Injected dynamically by app.js with movie background backdrop -->
+      </div>
+
+      <!-- Player Server Options -->
+      <div class="p-4 bg-[#101014]/95 border-t border-zinc-800/80 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-zinc-300 uppercase tracking-wider flex items-center space-x-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Cambiar Servidor de Transmisión:</span>
+          </span>
+          <span class="text-[11px] text-zinc-400">¿No carga? Prueba otro servidor</span>
+        </div>
+        
+        <div id="player-servers-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MEDIA DETAIL MODAL -->
+  <div id="media-detail-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-[#141418] border border-zinc-800 rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl space-y-0 max-h-[90vh] overflow-y-auto no-scrollbar">
+      
+      <div class="relative aspect-video w-full bg-zinc-900">
+        <img id="detail-backdrop" src="" alt="Backdrop" class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-t from-[#141418] via-transparent to-black/60"></div>
+        
+        <button onclick="window.app.closeDetails()" class="absolute top-4 right-4 p-2 rounded-xl bg-black/60 hover:bg-black text-white transition-colors">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+
+        <div class="absolute bottom-4 left-6 right-6 space-y-1">
+          <h2 id="detail-title" class="text-2xl sm:text-3xl font-black text-white tracking-tight"></h2>
+          <p id="detail-meta" class="text-xs text-zinc-300 font-semibold"></p>
+        </div>
+      </div>
+
+      <div class="p-6 space-y-5">
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <div class="flex items-center space-x-2">
+            <span class="px-2.5 py-1 rounded-lg bg-yellow-400 text-black text-xs font-black">
+              ★ <span id="detail-rating">8.8</span>
+            </span>
+            <span id="detail-quality" class="px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-300 text-xs font-bold border border-zinc-700">
+              4K UHD
+            </span>
+            <span class="px-2.5 py-1 rounded-lg bg-red-600/20 text-red-400 border border-red-500/30 text-xs font-bold">
+              Español Latino 🇵🇪
+            </span>
+            <span id="detail-views-badge" class="px-2.5 py-1 rounded-lg bg-blue-500/20 text-blue-300 border border-blue-500/30 text-xs font-bold flex items-center space-x-1">
+              <i data-lucide="eye" class="w-3.5 h-3.5 text-blue-400"></i>
+              <span id="detail-views-text">0</span>
+            </span>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <button id="detail-like-btn" class="px-3 py-2 rounded-xl bg-zinc-800 hover:bg-rose-500/20 text-zinc-300 hover:text-rose-400 text-xs font-bold border border-zinc-700 flex items-center space-x-1.5 transition-all cursor-pointer">
+              <i data-lucide="heart" id="detail-like-icon" class="w-3.5 h-3.5 text-zinc-400"></i>
+              <span id="detail-likes-text">0</span>
+            </button>
+            <a id="detail-html-link" href="#" class="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-bold border border-zinc-700 flex items-center space-x-1.5 transition-all">
+              <i data-lucide="external-link" class="w-4 h-4 text-yellow-400"></i>
+              <span>Página HTML</span>
+            </a>
+            <button id="detail-fav-btn" class="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-bold border border-zinc-700 flex items-center space-x-1.5 transition-all cursor-pointer">
+              <i data-lucide="bookmark" class="w-4 h-4"></i>
+              <span>Guardar</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <h3 class="text-xs font-bold uppercase text-zinc-400 tracking-wider">Sinopsis:</h3>
+          <p id="detail-overview" class="text-sm text-zinc-300 leading-relaxed font-normal"></p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t border-zinc-800/80 text-xs">
+          <div>
+            <span class="text-zinc-500 font-bold uppercase">Director:</span>
+            <p id="detail-director" class="text-zinc-200 font-semibold mt-0.5"></p>
+          </div>
+          <div>
+            <span class="text-zinc-500 font-bold uppercase">Reparto:</span>
+            <p id="detail-cast" class="text-zinc-200 font-semibold mt-0.5 line-clamp-1"></p>
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <button id="detail-watch-btn" class="w-full py-3.5 rounded-2xl bg-yellow-400 hover:bg-yellow-300 text-black font-extrabold text-sm flex items-center justify-center space-x-2 transition-transform active:scale-98 shadow-xl shadow-yellow-400/20 cursor-pointer">
+            <i data-lucide="play" class="w-4 h-4 fill-black"></i>
+            <span>Reproducir Película Ahora</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SEARCH MODAL (CMD+K) -->
+  <div id="search-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-start justify-center pt-16 sm:pt-24 px-4 hidden">
+    <div class="bg-[#141418] border border-zinc-800 rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl space-y-0 flex flex-col max-h-[80vh]">
+      
+      <!-- Search Input Header -->
+      <div class="p-4 sm:p-5 border-b border-zinc-800 flex items-center space-x-3 bg-[#16161d]">
+        <i data-lucide="search" class="w-5 h-5 text-yellow-400 flex-shrink-0"></i>
+        <input 
+          id="search-modal-input" 
+          type="text" 
+          placeholder="Buscar películas, animes, directores, actores, páginas HTML o ID (#avatar-2)..." 
+          class="flex-1 bg-transparent text-white placeholder-zinc-500 text-sm sm:text-base outline-none font-medium"
+          autocomplete="off"
+        />
+        <button onclick="window.app.closeSearch()" class="p-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Search Filters -->
+      <div class="px-4 py-2.5 bg-[#111115] border-b border-zinc-800 flex items-center space-x-2 overflow-x-auto no-scrollbar">
+        <button data-search-filter="all" class="px-3 py-1 rounded-xl bg-yellow-400 text-black font-bold text-xs">Todos</button>
+        <button data-search-filter="movie" class="px-3 py-1 rounded-xl bg-zinc-800/80 text-zinc-400 hover:text-white text-xs">Películas</button>
+        <button data-search-filter="tv" class="px-3 py-1 rounded-xl bg-zinc-800/80 text-zinc-400 hover:text-white text-xs">Series</button>
+        <button data-search-filter="anime" class="px-3 py-1 rounded-xl bg-zinc-800/80 text-zinc-400 hover:text-white text-xs">Anime</button>
+        <button data-search-filter="html" class="px-3 py-1 rounded-xl bg-zinc-800/80 text-zinc-400 hover:text-white text-xs">Con Página .HTML</button>
+      </div>
+
+      <!-- Results Header & List -->
+      <div class="p-4 flex-1 overflow-y-auto space-y-3 no-scrollbar">
+        <h4 id="search-header-title" class="text-xs font-bold text-zinc-400">Catálogo Disponible</h4>
+        <div id="search-results-grid" class="space-y-2">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ADMIN LOGIN MODAL -->
+  <div id="admin-login-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-[#141418] border border-zinc-800 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl p-6 sm:p-8 space-y-5">
+      
+      <div class="flex items-center justify-between border-b border-zinc-800 pb-4">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-2xl bg-yellow-400 text-black flex items-center justify-center font-black text-lg shadow-lg shadow-yellow-500/20">
+            <i data-lucide="shield-check" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-white flex items-center space-x-1.5">
+              <span>Acceso Administrador</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-red-600/20 text-red-400 border border-red-500/30 font-black">🇵🇪 PERÚ</span>
+            </h2>
+            <p class="text-[11px] text-zinc-400">andyaxceldominguezccorau TV</p>
+          </div>
+        </div>
+        <button onclick="window.app.closeAdminLoginModal()" class="p-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:text-white cursor-pointer">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="bg-yellow-400/10 border border-yellow-400/20 rounded-2xl p-3.5 text-xs text-yellow-200/90 leading-relaxed flex items-start space-x-2.5">
+        <i data-lucide="lock" class="w-4 h-4 text-yellow-400 flex-shrink-0 mt-0.5"></i>
+        <span>Panel de control exclusivo para el administrador de <strong>andyaxceldominguezccorau TV</strong> para gestionar el catálogo y generar código HTML.</span>
+      </div>
+
+      <form id="admin-login-form" onsubmit="event.preventDefault(); window.app.attemptAdminLogin(document.getElementById('admin-user-input').value, document.getElementById('admin-pass-input').value);" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-zinc-300 mb-1.5">Usuario de Administrador *</label>
+          <div class="relative">
+            <i data-lucide="user" class="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            <input 
+              id="admin-user-input" 
+              type="text" 
+              required 
+              placeholder="Ingresa tu usuario" 
+              class="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm outline-none focus:border-yellow-400 font-medium"
+              autocomplete="username"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-zinc-300 mb-1.5">Contraseña Secreta *</label>
+          <div class="relative">
+            <i data-lucide="key" class="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            <input 
+              id="admin-pass-input" 
+              type="password" 
+              required 
+              placeholder="••••••••" 
+              class="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm outline-none focus:border-yellow-400 font-mono text-sm"
+              autocomplete="current-password"
+            />
+          </div>
+        </div>
+
+        <div id="admin-login-error" class="text-xs text-red-400 bg-red-900/30 border border-red-500/30 p-2.5 rounded-xl hidden font-medium"></div>
+
+        <div class="pt-2 flex items-center space-x-3">
+          <button type="submit" class="flex-1 py-3 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-extrabold text-xs sm:text-sm flex items-center justify-center space-x-2 transition-all cursor-pointer shadow-lg shadow-yellow-500/20">
+            <i data-lucide="log-in" class="w-4 h-4"></i>
+            <span>Iniciar Sesión como Andy</span>
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- CREATOR MODAL -->
+  <div id="creator-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-[#141418] border border-zinc-800 rounded-3xl w-full max-w-xl overflow-hidden shadow-2xl p-6 sm:p-8 space-y-5 max-h-[90vh] overflow-y-auto no-scrollbar">
+      
+      <div class="flex items-center justify-between border-b border-zinc-800 pb-4">
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold flex items-center space-x-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              <span>ADMINISTRADOR OFICIAL: andy</span>
+            </span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-red-600/20 text-red-400 border border-red-500/30 font-black">🇵🇪 PERÚ</span>
+          </div>
+          <h2 class="text-lg font-bold text-white mt-1">
+            Panel de Administrador - Añadir Película / Stream
+          </h2>
+          <p class="text-xs text-zinc-400">Gestionado exclusivamente por Andy Axcel Dominguez Ccorau.</p>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="window.app.logoutAdmin()" class="px-3 py-1.5 rounded-xl bg-red-600/20 hover:bg-red-600 text-red-300 hover:text-white border border-red-500/30 text-xs font-bold transition-all cursor-pointer" title="Cerrar Sesión">
+            Cerrar Sesión
+          </button>
+          <button onclick="window.app.closeCreatorModal()" class="p-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:text-white cursor-pointer">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <form id="add-movie-form" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-zinc-300 mb-1">Título de la Película / Serie *</label>
+          <input id="form-title" type="text" required placeholder="Ej: Gladiador 2" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm outline-none focus:border-yellow-400" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-zinc-300 mb-1">Categoría</label>
+            <select id="form-category" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm outline-none focus:border-yellow-400">
+              <option value="movie">Película</option>
+              <option value="tv">Serie TV</option>
+              <option value="anime">Anime</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-zinc-300 mb-1">Año</label>
+            <input id="form-year" type="number" value="2025" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm outline-none focus:border-yellow-400" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-zinc-300 mb-1">Enlace de Reproducción (URL / Embed / Doodstream / M3U8) *</label>
+          <input id="form-url" type="url" required placeholder="https://playmogo.com/e/... o https://streamwish.to/e/..." class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm outline-none focus:border-yellow-400 font-mono text-xs" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-zinc-300 mb-1">Servidor / Proveedor</label>
+            <input id="form-provider" type="text" value="Doodstream" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm outline-none focus:border-yellow-400" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-zinc-300 mb-1">Calidad</label>
+            <input id="form-quality" type="text" value="4K UHD" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm outline-none focus:border-yellow-400" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-zinc-300 mb-1">URL del Póster (Imagen de Portada)</label>
+          <input id="form-poster" type="url" placeholder="https://image.tmdb.org/t/p/w500/..." class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm outline-none focus:border-yellow-400 font-mono text-xs" />
+        </div>
+
+        <div class="flex items-center space-x-3 pt-2">
+          <button type="submit" class="flex-1 py-3 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-extrabold text-sm transition-all cursor-pointer">
+            Guardar en Catálogo (Admin Andy)
+          </button>
+          <button type="button" id="download-html-btn" class="px-4 py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-bold text-xs border border-zinc-700" title="Descarga un archivo .html listo para abrir">
+            Descargar .HTML
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification System -->
+  <div id="app-toast" class="fixed bottom-6 right-6 z-50 bg-yellow-400 text-black px-4 py-2.5 rounded-2xl font-bold text-xs shadow-2xl flex items-center space-x-2 transition-all duration-300 transform translate-y-2 opacity-0"></div>
+
+  <!-- Core App Engine Script -->
+  <script src="src/app.js"></script>
+
+  <script>
+    // Lucide initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    });
+  </script>
+</body>
+</html>
