@@ -1,0 +1,98 @@
+{
+    "id": "avatar-2-el-sentido-del-agua",
+    "title": "Avatar: El Sentido del Agua",
+    "originalTitle": "Avatar: The Way of Water",
+    "type": "movie",
+    "isAnime": false,
+    "poster": "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
+    "backdrop": "https://image.tmdb.org/t/p/original/8sMmAmwh2xRURq6949qPt09x3Me.jpg",
+    "year": 2022,
+    "rating": 8.8,
+    "quality": "4K UHD",
+    "duration": "3h 12m",
+    "genres": [
+      "Ciencia Ficción",
+      "Aventura",
+      "Acción",
+      "Fantasía"
+    ],
+    "overview": "Ambientada más de una década después de los acontecimientos de la primera película, Avatar: The Way of Water empieza contando la historia de la familia Sully, los problemas que los persiguen y las batallas que libran en los océanos de Pandora.",
+    "director": "James Cameron",
+    "cast": [
+      "Sam Worthington",
+      "Zoe Saldaña",
+      "Sigourney Weaver",
+      "Kate Winslet"
+    ],
+    "platform": "Disney+",
+    "htmlPage": "avatar-2.html",
+    "keywords": "avatar 2, el sentido del agua, the way of water, james cameron, pandora, na vi, jake sully, neytiri, doodstream",
+    "servers": [
+      {
+        "id": "dood-avatar2-playmogo",
+        "name": "Doodstream (Playmogo)",
+        "quality": "1080p FHD",
+        "lang": "Español Latino",
+        "url": "https://playmogo.com/e/ykm9tsifkch1",
+        "provider": "Doodstream"
+      },
+      {
+        "id": "dood-avatar2-d000d",
+        "name": "Doodstream (Espejo 1)",
+        "quality": "1080p FHD",
+        "lang": "Español Latino",
+        "url": "https://d000d.com/e/ykm9tsifkch1",
+        "provider": "Doodstream"
+      },
+      {
+        "id": "dood-avatar2-do0od",
+        "name": "Doodstream (Espejo 2)",
+        "quality": "1080p FHD",
+        "lang": "Español Latino",
+        "url": "https://do0od.com/e/ykm9tsifkch1",
+        "provider": "Doodstream"
+      },
+      {
+        "id": "vidsrc-avatar-2-el-sentido-del-agua",
+        "name": "Servidor 4K VIP",
+        "quality": "4K UHD",
+        "lang": "Latino / Dual",
+        "url": "https://vidsrc.to/embed/movie/tt1630029",
+        "provider": "Vidsrc"
+      },
+      {
+        "id": "wish-avatar-2-el-sentido-del-agua",
+        "name": "StreamWish Directo",
+        "quality": "1080p FHD",
+        "lang": "Español Latino",
+        "url": "https://streamwish.to/e/tt1630029",
+        "provider": "StreamWish"
+      },
+      {
+        "id": "filemoon-avatar-2-el-sentido-del-agua",
+        "name": "FileMoon 4K",
+        "quality": "1080p FHD",
+        "lang": "Español Latino",
+        "url": "https://filemoon.sx/e/tt1630029",
+        "provider": "FileMoon"
+      },
+      {
+        "id": "tape-avatar-2-el-sentido-del-agua",
+        "name": "Streamtape MP4",
+        "quality": "1080p FHD",
+        "lang": "Español Latino",
+        "url": "https://streamtape.com/e/tt1630029",
+        "provider": "Streamtape"
+      },
+      {
+        "id": "vdohide-avatar-2-el-sentido-del-agua",
+        "name": "VdoHide Fast",
+        "quality": "1080p FHD",
+        "lang": "Español Latino",
+        "url": "https://vdohide.com/e/tt1630029",
+        "provider": "VdoHide"
+      }
+    ],
+    "isFeatured": true,
+    "isTrending": true
+  },
