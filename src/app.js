@@ -3550,152 +3550,204 @@ class AndyStreamApp {
     });
   }
 
-  renderSearchResults(query) {
-    const container = document.getElementById('search-results-grid');
-    const headerTitle = document.getElementById('search-header-title');
-    if (!container) return;
+renderSearchResults(query) {
+  const container = document.getElementById('search-results-grid');
+  const headerTitle = document.getElementById('search-header-title');
 
-    const trimmed = query.toLowerCase().trim();
-    
-    let filtered = this.mediaList;
-    if (this.searchFilter === 'movie') {
-      filtered = filtered.filter(m => m.type === 'movie');
-    } else if (this.searchFilter === 'tv') {
-      filtered = filtered.filter(m => m.type === 'tv');
-    } else if (this.searchFilter === 'anime') {
-      filtered = filtered.filter(m => m.isAnime || m.type === 'anime');
-    } else if (this.searchFilter === 'html') {
-      filtered = filtered.filter(m => Boolean(m.htmlPage));
-    }
+  if (!container) return;
 
-    if (trimmed) {
-      filtered = filtered.filter(item => 
-        (item.id && item.id.toLowerCase().includes(trimmed)) ||
-        (item.title && item.title.toLowerCase().includes(trimmed)) ||
-        (item.originalTitle && item.originalTitle.toLowerCase().includes(trimmed)) ||
-        (item.director && item.director.toLowerCase().includes(trimmed)) ||
-        (item.cast && item.cast.some(c => c.toLowerCase().includes(trimmed))) ||
-        (item.keywords && item.keywords.toLowerCase().includes(trimmed)) ||
-        (item.genres && item.genres.some(g => g.toLowerCase().includes(trimmed))) ||
-        (item.htmlPage && item.htmlPage.toLowerCase().includes(trimmed))
+  const trimmed = String(query || '').toLowerCase().trim();
+
+  let filtered = [...this.mediaList];
+
+  // FILTROS
+  if (this.searchFilter === 'movie') {
+    filtered = filtered.filter(m => m.type === 'movie');
+
+  } else if (this.searchFilter === 'tv') {
+    filtered = filtered.filter(m => m.type === 'tv');
+
+  } else if (this.searchFilter === 'anime') {
+    filtered = filtered.filter(
+      m => m.isAnime || m.type === 'anime'
+    );
+
+  } else if (this.searchFilter === 'html') {
+    filtered = filtered.filter(
+      m => Boolean(m.htmlPage)
+    );
+  }
+
+  // BUSQUEDA EN TODOS LOS JSON
+  if (trimmed) {
+
+    const searchTerms = trimmed
+      .replace(/^#/, '')
+      .split(/\s+/)
+      .filter(Boolean);
+
+    filtered = filtered.filter(item => {
+
+      const searchableText = [
+        item.id,
+        item.title,
+        item.originalTitle,
+        item.director,
+        item.cast,
+        item.keywords,
+        item.genres,
+        item.htmlPage,
+        item.year,
+        item.type,
+        item.quality,
+        item.duration,
+        item.platform,
+        item.provider
+      ]
+        .flat(Infinity)
+        .filter(value => value !== null && value !== undefined)
+        .join(' ')
+        .toLowerCase();
+
+      return searchTerms.every(term =>
+        searchableText.includes(term)
       );
-    }
-
-    if (headerTitle) {
-      headerTitle.innerHTML = trimmed
-        ? `Resultados para <span class="text-yellow-400">"${query}"</span> (${filtered.length} encontrados)`
-        : `Catálogo Disponible en andyaxceldominguezccorau TV 🇵🇪 <span class="text-yellow-400 font-extrabold">(${filtered.length} títulos)</span>`;
-    }
-
-    container.innerHTML = '';
-    
-    if (filtered.length === 0) {
-      container.innerHTML = `
-        <div class="col-span-full py-12 text-center text-zinc-500">
-          <p class="text-base font-semibold">No se encontraron resultados para "${query}"</p>
-          <p class="text-xs text-zinc-600 mt-1">Prueba con palabras clave, título, actor, año o ID (#avatar-2)</p>
-        </div>
-      `;
-      return;
-    }
-
-    filtered.forEach(item => {
-      const itemEl = document.createElement('div');
-      itemEl.className = 'flex items-center justify-between p-3 rounded-2xl bg-[#141419] hover:bg-[#1c1c24] border border-zinc-800/80 hover:border-yellow-400/50 cursor-pointer transition-all duration-200 group';
-      
-      const safeTitle = item.title.replace(/'/g, "\'");
-      const genre = item.genres[0] || '4K';
-
-      itemEl.innerHTML = `
-        <div class="flex items-center space-x-3.5 min-w-0 flex-1">
-          <div class="w-14 h-20 rounded-xl overflow-hidden bg-zinc-900 flex-shrink-0 relative border border-zinc-800">
-            <img 
-              src="${item.poster}" 
-              alt="${item.title}" 
-              onerror="this.onerror=null; this.src=getPosterFallback('${safeTitle}', '${genre}', '${item.year}');"
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform" 
-            />
-          </div>
-          <div class="flex-1 min-w-0 pr-2">
-            <div class="flex items-center space-x-2">
-              <span class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-yellow-400 font-mono font-bold">#${item.id}</span>
-              <span class="text-[10px] text-zinc-400">${item.year}</span>
-            </div>
-            <h3 class="text-sm font-bold text-zinc-100 group-hover:text-yellow-400 truncate mt-0.5">
-              ${item.title}
-            </h3>
-            <p class="text-xs text-zinc-400 mt-0.5 truncate">
-              ★ ${item.rating.toFixed(1)} • ${item.genres.slice(0, 2).join(', ')} • ${item.quality}
-            </p>
-          </div>
-        </div>
-
-        <div class="flex items-center space-x-2 flex-shrink-0">
-          ${item.htmlPage ? `
-            <a href="${item.htmlPage}" class="p-2 rounded-xl bg-zinc-800 hover:bg-yellow-400 hover:text-black text-zinc-300 transition-colors border border-zinc-700 text-xs font-semibold flex items-center space-x-1" title="Abrir página HTML individual">
-              <span class="text-[11px] font-bold">.HTML</span>
-            </a>
-          ` : ''}
-          <button class="p-2.5 rounded-xl bg-yellow-400 text-black hover:bg-yellow-300 font-bold transition-all shadow-md flex items-center justify-center">
-            <svg class="w-4 h-4 fill-black" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-          </button>
-        </div>
-      `;
-
-      itemEl.onclick = (e) => {
-        if (e.target.closest('a')) return;
-        this.closeSearch();
-        this.playMedia(item);
-      };
-
-      container.appendChild(itemEl);
     });
   }
 
-  render() {
-    this.renderHero();
-
-    const favBadge = document.getElementById('fav-count-badge');
-    if (favBadge) {
-      if (this.favorites.length > 0) {
-        favBadge.textContent = this.favorites.length;
-        favBadge.classList.remove('hidden');
-      } else {
-        favBadge.classList.add('hidden');
-      }
-    }
-
-    const movies = this.mediaList.filter(m => m.type === 'movie');
-    const series = this.mediaList.filter(m => m.type === 'tv');
-    const anime = this.mediaList.filter(m => m.isAnime || m.type === 'anime');
-    const trending = this.mediaList.filter(m => m.isTrending);
-    const favItems = this.mediaList.filter(m => this.favorites.includes(m.id));
-
-    this.renderRow('row-latest-movies', movies);
-    this.renderRow('row-latest-tv', series);
-    this.renderRow('row-latest-anime', anime);
-    this.renderRow('row-trending', trending);
-
-    this.renderGrid('grid-explore', this.mediaList);
-    this.renderGrid('grid-movies', movies);
-    this.renderGrid('grid-tv', series);
-    this.renderGrid('grid-anime', anime);
-    this.renderGrid('grid-trending', trending);
-    this.renderGrid('grid-favorites', favItems);
-
-    const emptyFavs = document.getElementById('fav-empty-state');
-    if (emptyFavs) {
-      if (favItems.length === 0) {
-        emptyFavs.classList.remove('hidden');
-      } else {
-        emptyFavs.classList.add('hidden');
-      }
-    }
-
-    if (window.lucide) {
-      window.lucide.createIcons();
-    }
+  // TITULO
+  if (headerTitle) {
+    headerTitle.innerHTML = trimmed
+      ? `Resultados para <span class="text-yellow-400">"${query}"</span> (${filtered.length} encontrados)`
+      : `Catálogo Disponible <span class="text-yellow-400 font-extrabold">(${filtered.length} títulos)</span>`;
   }
+
+  container.innerHTML = '';
+
+  // SIN RESULTADOS
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="col-span-full py-12 text-center text-zinc-500">
+        <p class="text-base font-semibold">
+          No se encontraron resultados para "${query}"
+        </p>
+
+        <p class="text-xs text-zinc-600 mt-1">
+          Prueba con título, actor, género, año o ID como #avatar-2
+        </p>
+      </div>
+    `;
+
+    return;
+  }
+
+  // RESULTADOS
+  filtered.forEach(item => {
+
+    const itemEl = document.createElement('div');
+
+    itemEl.className =
+      'flex items-center justify-between p-3 rounded-2xl bg-[#141419] hover:bg-[#1c1c24] border border-zinc-800/80 hover:border-yellow-400/50 cursor-pointer transition-all duration-200 group';
+
+    const title = String(item.title || 'Sin título');
+
+    const genre =
+      Array.isArray(item.genres)
+        ? item.genres[0] || '4K'
+        : '4K';
+
+    itemEl.innerHTML = `
+      <div class="flex items-center space-x-3.5 min-w-0 flex-1">
+
+        <div class="w-14 h-20 rounded-xl overflow-hidden bg-zinc-900 flex-shrink-0 relative border border-zinc-800">
+
+          <img
+            src="${item.poster || ''}"
+            alt="${title}"
+            loading="lazy"
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform"
+            onerror="this.onerror=null; this.src=getPosterFallback('${title.replace(/'/g, "\\'")}', '${genre}', '${item.year || ''}');"
+          />
+
+        </div>
+
+        <div class="flex-1 min-w-0 pr-2">
+
+          <div class="flex items-center space-x-2">
+
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-yellow-400 font-mono font-bold">
+              #${item.id || ''}
+            </span>
+
+            <span class="text-[10px] text-zinc-400">
+              ${item.year || ''}
+            </span>
+
+          </div>
+
+          <h3 class="text-sm font-bold text-zinc-100 group-hover:text-yellow-400 truncate mt-0.5">
+            ${title}
+          </h3>
+
+          <p class="text-xs text-zinc-400 mt-0.5 truncate">
+            ★ ${Number(item.rating || 0).toFixed(1)}
+            • ${
+              Array.isArray(item.genres)
+                ? item.genres.slice(0, 2).join(', ')
+                : ''
+            }
+            • ${item.quality || ''}
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="flex items-center space-x-2 flex-shrink-0">
+
+        ${
+          item.htmlPage
+            ? `
+              <a
+                href="${item.htmlPage}"
+                class="p-2 rounded-xl bg-zinc-800 hover:bg-yellow-400 hover:text-black text-zinc-300 transition-colors border border-zinc-700 text-xs font-semibold"
+                title="Abrir página HTML individual"
+              >
+                <span class="text-[11px] font-bold">
+                  .HTML
+                </span>
+              </a>
+            `
+            : ''
+        }
+
+        <button
+          class="p-2.5 rounded-xl bg-yellow-400 text-black hover:bg-yellow-300 font-bold transition-all shadow-md flex items-center justify-center"
+        >
+          <svg
+            class="w-4 h-4 fill-black"
+            viewBox="0 0 24 24"
+          >
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+        </button>
+
+      </div>
+    `;
+
+    itemEl.onclick = (e) => {
+
+      if (e.target.closest('a')) {
+        return;
+      }
+
+      this.closeSearch();
+      this.playMedia(item);
+
+    };
+
+    container.appendChild(itemEl);
+  });
 }
 
 // Global Startup Instance
